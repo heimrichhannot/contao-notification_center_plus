@@ -37,11 +37,6 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
 				NotificationCenterPlus::getStylesheetContents($this->getMessage(), NotificationCenterPlus::CSS_MODE_INLINE)));
 		}
 
-		ob_start();
-		echo $strHtmlBody;
-		file_put_contents('/home/dennis/debug.txt', ob_get_contents(), FILE_APPEND);
-		ob_end_clean();
-
 		return $strHtmlBody;
 	}
 
