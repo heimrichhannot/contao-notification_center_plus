@@ -1,0 +1,35 @@
+{
+    "name": "heimrichhannot/contao-notification_center_plus",
+    "description":"Extends the notification center with additional features.",
+    "keywords":["contao", "notification", "center", "inline", "css", "module", "developer"],
+    "type": "contao-module",
+    "homepage":"https://github.com/heimrichhannot/contao-notification_center_plus",
+    "license":"LGPL-3.0+",
+    "authors":[
+        {
+            "name":"Heimrich & Hannot",
+            "email":"digitales@heimrich-hannot.de",
+            "homepage":"http://www.heimrich-hannot.de",
+            "role":"Developer"
+        }
+    ],
+    "support":{
+        "issues":"https://github.com/heimrichhannot/contao-notification_center_plus/issues"
+    },
+    "require": {
+        "contao/core": ">=3.2,<4-dev",
+        "terminal42/notification_center": ">=1.3.0",
+        "heimrichhannot/contao-haste_plus": ">=1.0.6",
+        "bariew/phpquery": ">=1.0.2"
+    },
+    "autoload": {
+        "classmap": [""]
+    },
+    "extra": {
+        "contao": {
+            "sources": {
+                "": "system/modules/notification_center_plus"
+            }
+        }
+    }
+}
