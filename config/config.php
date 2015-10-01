@@ -25,13 +25,13 @@ foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'] as $strT
 	if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html']))
 		$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'] = array_merge(
 			$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'],
-			array('salutation_user', 'salutation_form')
+			array('salutation_user', 'salutation_form', 'salutation_billing_address')
 		);
 
 	if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text']))
 		$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'] = array_merge(
 			$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'],
-			array('salutation_user', 'salutation_form')
+			array('salutation_user', 'salutation_form', 'salutation_billing_address')
 		);
 }
 

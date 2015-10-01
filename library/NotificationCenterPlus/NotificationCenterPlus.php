@@ -76,6 +76,16 @@ class NotificationCenterPlus
 				'lastname' => $arrTokens['form_lastname']
 			));
 
+		if (in_array('isotope', \ModuleLoader::getActive()))
+		{
+			if (!isset($arrTokens['billing_address_form']))
+				$arrTokens['salutation_billing_address'] = static::createSalutation($language, array(
+					'gender' => $arrTokens['billing_address_gender'],
+					'title' => $arrTokens['billing_address_title'],
+					'lastname' => $arrTokens['billing_address_lastname']
+				));
+		}
+
 		return true;
 	}
 
