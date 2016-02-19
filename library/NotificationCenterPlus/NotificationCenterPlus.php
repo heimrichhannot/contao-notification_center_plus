@@ -8,6 +8,7 @@ use HeimrichHannot\HastePlus\Arrays;
 use HeimrichHannot\HastePlus\Environment;
 use HeimrichHannot\HastePlus\Files;
 use NotificationCenter\Model\Message;
+use NotificationCenter\Model\Notification;
 
 class NotificationCenterPlus
 {
@@ -145,4 +146,11 @@ class NotificationCenterPlus
 		}
 	}
 
+	public static function sendNotification($intId, $arrTokens)
+	{
+		if (($objNotification = Notification::findByPk($intId)) !== null)
+		{
+			$objNotification->send($arrTokens, $GLOBALS['TL_LANGUAGE']);
+		}
+	}
 }
