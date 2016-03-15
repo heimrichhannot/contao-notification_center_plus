@@ -65,13 +65,13 @@ class NotificationCenterPlus
 		return array_map('file_get_contents', static::getStylesheetPaths($objMessage, $strMode));
 	}
 
-	public function addTokens($objMessage, &$arrTokens, $language, $objGatewayModel)
+	public function addTokens($objMessage, &$arrTokens, $strLanguage, $objGatewayModel)
 	{
 		if (!isset($arrTokens['salutation_user']))
-			$arrTokens['salutation_user'] = static::createSalutation($language, \FrontendUser::getInstance());
+			$arrTokens['salutation_user'] = static::createSalutation($strLanguage, \FrontendUser::getInstance());
 
 		if (!isset($arrTokens['salutation_form']))
-			$arrTokens['salutation_form'] = static::createSalutation($language, array(
+			$arrTokens['salutation_form'] = static::createSalutation($strLanguage, array(
 				'gender' => $arrTokens['form_gender'],
 				'title' => $arrTokens['form_title'],
 				'lastname' => $arrTokens['form_lastname']
@@ -80,14 +80,95 @@ class NotificationCenterPlus
 		if (in_array('isotope', \ModuleLoader::getActive()))
 		{
 			if (!isset($arrTokens['billing_address_form']))
-				$arrTokens['salutation_billing_address'] = static::createSalutation($language, array(
+				$arrTokens['salutation_billing_address'] = static::createSalutation($strLanguage, array(
 					'gender' => $arrTokens['billing_address_gender'],
 					'title' => $arrTokens['billing_address_title'],
 					'lastname' => $arrTokens['billing_address_lastname']
 				));
 		}
 
+		$this->addContextTokens($objMessage, $arrTokens, $strLanguage);
+		
 		return true;
+	}
+
+
+	/**
+	 *
+	 * Add contao core tokens, as long as the cron job does not have these information
+	 * on sending mail in queue mode
+	 *
+	 * @param $arrTokens
+	 * @param $strLanguage
+	 * @return bool false if context_tokens has been set already (required by cron)
+	 */
+	protected function addContextTokens($objMessage, &$arrTokens, $strLanguage)
+	{
+		// add context tokens only once (queue will trigger this function again, and tokens might be overwritten)
+		if(isset($arrTokens['context_tokens']))
+		{
+			return false;
+		}
+
+		$arrTokens['context_tokens'] = true;
+
+		// add environment variables as token
+		$arrTokens['env_host'] = \Idna::decode(\Environment::get('host'));
+		$arrTokens['env_http_host'] = \Idna::decode(\Environment::get('httpHost'));
+		$arrTokens['env_url'] = \Idna::decode(\Environment::get('url'));
+		$arrTokens['env_path'] = \Idna::decode(\Environment::get('base'));
+		$arrTokens['env_request'] = \Idna::decode(\Environment::get('indexFreeRequest'));
+		$arrTokens['env_ip'] = \Idna::decode(\Environment::get('ip'));
+		$arrTokens['env_referer'] = \System::getReferer();
+		$arrTokens['env_files_url'] = TL_FILES_URL;
+		$arrTokens['env_plugins_url'] = TL_ASSETS_URL;
+		$arrTokens['env_script_url'] = TL_ASSETS_URL;
+
+
+		// add date tokens
+		$arrTokens['date'] = \Controller::replaceInsertTags('{{date}}');
+		$arrTokens['last_update'] = \Controller::replaceInsertTags('{{last_update}}');
+
+		if(TL_MODE == 'FE')
+		{
+			// add current page as token
+			global $objPage;
+
+			if($objPage !== null)
+			{
+				foreach($objPage->row() as $key => $value)
+				{
+					$arrTokens['page_' . $key] = $value;
+				}
+
+				if($objPage->pageTitle == '')
+				{
+					$arrTokens['pageTitle'] = $objPage->title;
+				}
+				else if($objPage->parentPageTitle == '')
+				{
+					$arrTokens['parentPageTitle'] = $objPage->parentTitle;
+				}
+				else if($objPage->mainPageTitle == '')
+				{
+					$arrTokens['mainPageTitle'] = $objPage->mainTitle;
+				}
+			}
+
+			// add user attributes as token
+			if(FE_USER_LOGGED_IN)
+			{
+				$arrUserData = \FrontendUser::getInstance()->getData();
+
+				if(is_array($arrUserData))
+				{
+					foreach($arrUserData as $key => $value)
+					{
+						$arrTokens['user_' . $key] = $value;
+					}
+				}
+			}
+		}
 	}
 
 	/**
