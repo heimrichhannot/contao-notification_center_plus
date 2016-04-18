@@ -2,8 +2,6 @@
 
 namespace HeimrichHannot\NotificationCenterPlus;
 
-use Avisota\Contao\Message\Core\Event\PostRenderMessageContentEvent;
-use Avisota\Contao\Message\Core\Event\RenderMessageContentEvent;
 use HeimrichHannot\Haste\Util\Arrays;
 use HeimrichHannot\Haste\Util\Files;
 use NotificationCenter\Model\Message;
