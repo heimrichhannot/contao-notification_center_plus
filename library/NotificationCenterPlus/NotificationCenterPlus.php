@@ -4,9 +4,8 @@ namespace HeimrichHannot\NotificationCenterPlus;
 
 use Avisota\Contao\Message\Core\Event\PostRenderMessageContentEvent;
 use Avisota\Contao\Message\Core\Event\RenderMessageContentEvent;
-use HeimrichHannot\HastePlus\Arrays;
-use HeimrichHannot\HastePlus\Environment;
-use HeimrichHannot\HastePlus\Files;
+use HeimrichHannot\Haste\Util\Arrays;
+use HeimrichHannot\Haste\Util\Files;
 use NotificationCenter\Model\Message;
 use NotificationCenter\Model\Notification;
 
@@ -173,7 +172,7 @@ class NotificationCenterPlus
 
 	/**
 	 * @param $strLanguage
-	 * @param $varEntity object or array
+	 * @param $varEntity object|array
 	 *
 	 * @return string
 	 */
