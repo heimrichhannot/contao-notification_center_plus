@@ -231,4 +231,16 @@ class NotificationCenterPlus
 			$objNotification->send($arrTokens, $GLOBALS['TL_LANGUAGE']);
 		}
 	}
+
+	public static function getNotificationsAsOptions($strType)
+	{
+		$arrChoices = array();
+		$objNotifications = \Database::getInstance()->execute("SELECT id,title FROM tl_nc_notification WHERE type='$strType' ORDER BY title");
+
+		while ($objNotifications->next()) {
+			$arrChoices[$objNotifications->id] = $objNotifications->title;
+		}
+
+		return $arrChoices;
+	}
 }
