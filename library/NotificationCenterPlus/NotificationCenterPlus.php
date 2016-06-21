@@ -243,4 +243,24 @@ class NotificationCenterPlus
 
 		return $arrChoices;
 	}
+
+	public function getNotificationMessagesAsOptions(\DataContainer $objDc)
+	{
+		$arrOptions = array();
+
+		if (($objMessages = Message::findAll()) === null) {
+			return $arrOptions;
+		}
+
+		while ($objMessages->next())
+		{
+			if (($objNotification = $objMessages->getRelated('pid')) === null) {
+				continue;
+			}
+
+			$arrOptions[$objNotification->title][$objMessages->id] = $objMessages->title;
+		}
+
+		return $arrOptions;
+	}
 }
