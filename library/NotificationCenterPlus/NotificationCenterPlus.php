@@ -9,7 +9,6 @@ use NotificationCenter\Model\Notification;
 
 class NotificationCenterPlus
 {
-
 	const CSS_MODE_INLINE = 'inline';
 	const CSS_MODE_HEADER = 'header';
 
@@ -89,6 +88,20 @@ class NotificationCenterPlus
 		return true;
 	}
 
+	public static function getTokensFromEntity($objEntity, $strPrefix, $arrFields = array())
+	{
+		$arrTokens = array();
+
+		foreach ($objEntity->row() as $strKey => $varValue)
+		{
+			if (empty($arrFields) || in_array($strKey, $arrFields))
+			{
+				$arrTokens[$strPrefix . '_' . lcfirst($strKey)] = $varValue;
+			}
+		}
+
+		return $arrTokens;
+	}
 
 	/**
 	 *
