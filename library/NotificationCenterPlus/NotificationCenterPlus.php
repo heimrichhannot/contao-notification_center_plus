@@ -187,18 +187,36 @@ class NotificationCenterPlus
 	 *
 	 * @return string
 	 */
-	public static function createSalutation($strLanguage, $varEntity)
+	public static function createSalutation($strLanguage, $varEntity, $blnInformal = false, $blnInformalFirstname = false)
 	{
 		if (is_array($varEntity))
 			$varEntity = Arrays::arrayToObject($varEntity);
 
+		$blnHasFirstname = $varEntity->firstname;
 		$blnHasLastname = $varEntity->lastname;
 		$blnHasTitle = $varEntity->title && $varEntity->title != '-' && $varEntity->title != 'Titel' && $varEntity->title != 'Title';
 
 		switch ($strLanguage)
 		{
 			case 'en':
-				if ($blnHasLastname)
+				if ($blnInformal)
+				{
+					if ($blnHasFirstname && $blnInformalFirstname)
+					{
+						return $GLOBALS['TL_LANG']['notification_center_plus']['salutation'] .  ' ' .
+							$varEntity->firstname;
+					}
+					elseif ($blnHasLastname && !$blnInformalFirstname)
+					{
+						return $GLOBALS['TL_LANG']['notification_center_plus']['salutation'] .  ' ' .
+							$varEntity->lastname;
+					}
+					else
+					{
+						return $GLOBALS['TL_LANG']['notification_center_plus']['salutation'];
+					}
+				}
+				elseif ($blnHasLastname)
 				{
 					if ($blnHasTitle)
 						$strSalutation =
@@ -218,7 +236,24 @@ class NotificationCenterPlus
 				break;
 			default:
 				// de
-				if ($blnHasLastname)
+				if ($blnInformal)
+				{
+					if ($blnHasFirstname && $blnInformalFirstname)
+					{
+						return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGenericInformal'] .  ' ' .
+						$varEntity->firstname;
+					}
+					elseif ($blnHasLastname && !$blnInformalFirstname)
+					{
+						return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGenericInformal'] .  ' ' .
+						$varEntity->lastname;
+					}
+					else
+					{
+						return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGenericInformal'];
+					}
+				}
+				elseif ($blnHasLastname && !$blnInformal)
 				{
 					$strSalutation = $GLOBALS['TL_LANG']['notification_center_plus'][
 									 'salutation' . ($varEntity->gender == 'female' ? 'Female' : 'Male')
