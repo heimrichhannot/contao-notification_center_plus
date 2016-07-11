@@ -174,6 +174,18 @@ class NotificationCenterPlus
 				{
 					foreach($arrUserData as $key => $value)
 					{
+						if(!is_array($value) && \Validator::isBinaryUuid($value))
+						{
+							$value = \StringUtil::binToUuid($value);
+
+							$objFile = \FilesModel::findByUuid($value);
+
+							if($objFile !== null)
+							{
+								$value = $objFile->path;
+							}
+						}
+						
 						$arrTokens['user_' . $key] = $value;
 					}
 				}
