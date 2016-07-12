@@ -12,6 +12,7 @@ namespace HeimrichHannot\NotificationCenterPlus\MessageDraft;
 
 use HeimrichHannot\HastePlus\DOM;
 use HeimrichHannot\NotificationCenterPlus\NotificationCenterPlus;
+use HeimrichHannot\NotificationCenterPlus\Util\StringUtil;
 use NotificationCenter\Util\String;
 
 class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDraft
