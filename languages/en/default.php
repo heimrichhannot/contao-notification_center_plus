@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['TL_LANG']['notification_center_plus']['salutation'] = 'Dear';
-$GLOBALS['TL_LANG']['notification_center_plus']['salutationMale'] = 'Dear Mr.';
-$GLOBALS['TL_LANG']['notification_center_plus']['salutationFemale'] = 'Dear Mrs.';
-$GLOBALS['TL_LANG']['notification_center_plus']['salutationGeneric'] = 'Dear Sir or Madam';
+$GLOBALS['TL_LANG']['tl_event_subscription']['salutation'] = 'Dear';
+$GLOBALS['TL_LANG']['tl_event_subscription']['salutationMale'] = 'Dear Mr.';
+$GLOBALS['TL_LANG']['tl_event_subscription']['salutationFemale'] = 'Dear Mrs.';
+$GLOBALS['TL_LANG']['tl_event_subscription']['salutationGeneric'] = 'Dear Sir or Madam';

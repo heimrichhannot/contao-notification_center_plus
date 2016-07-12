@@ -40,4 +40,27 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
 		return $strHtmlBody;
 	}
 
+	public function getAttachments()
+	{
+		// Token attachments
+		$arrAttachments = StringUtil::getTokenAttachments($this->objLanguage->attachment_tokens, $this->arrTokens);
+
+		// Add static attachments
+		$arrStaticAttachments = deserialize($this->objLanguage->attachments, true);
+
+		if (!empty($arrStaticAttachments)) {
+			$objFiles = \FilesModel::findMultipleByUuids($arrStaticAttachments);
+
+			if ($objFiles === null) {
+				return $arrAttachments;
+			}
+
+			while ($objFiles->next()) {
+				$arrAttachments[] = TL_ROOT . '/' . $objFiles->path;
+			}
+		}
+
+		return $arrAttachments;
+	}
+
 }
