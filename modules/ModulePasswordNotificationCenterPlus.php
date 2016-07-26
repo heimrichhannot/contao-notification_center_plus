@@ -30,6 +30,11 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
 		// Add member tokens
 		foreach ($objMember->row() as $k => $v)
 		{
+			if (\Validator::isBinaryUuid($v))
+			{
+				$v = \StringUtil::binToUuid($v);
+			}
+
 			$arrTokens['member_' . $k] = $v;
 		}
 
