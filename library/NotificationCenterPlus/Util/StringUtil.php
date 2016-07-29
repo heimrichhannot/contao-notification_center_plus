@@ -36,10 +36,12 @@ class StringUtil extends \NotificationCenter\Util\StringUtil
 				$strParsedToken = \StringUtil::parseSimpleTokens($strToken, $arrTokens);
 			}
 
-			foreach (trimsplit(',', $strParsedToken) as $strFile) {
-				$strFileFull = TL_ROOT . '/' . $strFile;
+			foreach (trimsplit(',', $strParsedToken) as $strFile)
+			{
+				$strFileFull = TL_ROOT . '/' . str_replace($arrTokens['env_url'] . '/', '', $strFile);
 
-				if (is_file($strFileFull)) {
+				if (is_file($strFileFull))
+				{
 					$arrAttachments[$strFile] = $strFileFull;
 				}
 			}
