@@ -304,7 +304,7 @@ class NotificationCenterPlus
 		return $arrChoices;
 	}
 
-	public function getNotificationMessagesAsOptions(\DataContainer $objDc)
+	public function getNotificationMessagesAsOptions()
 	{
 		$arrOptions = array();
 
