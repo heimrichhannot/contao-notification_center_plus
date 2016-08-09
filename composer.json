@@ -18,7 +18,7 @@
     },
     "require": {
         "contao/core": ">=3.2,<4-dev",
-        "heimrichhannot/contao_notification_center_plus": "~1.0",
+        "terminal42/notification_center": "~1.3",
         "heimrichhannot/contao-haste_plus": "~1.4",
         "bariew/phpquery": "~1.0"
     },
