@@ -208,6 +208,11 @@ class NotificationCenterPlus
 		$blnHasLastname = $varEntity->lastname;
 		$blnHasTitle = $varEntity->title && $varEntity->title != '-' && $varEntity->title != 'Titel' && $varEntity->title != 'Title';
 
+		if($strLanguage)
+		{
+			\Controller::loadLanguageFile('default', $strLanguage);
+		}
+
 		switch ($strLanguage)
 		{
 			case 'en':
