@@ -3,11 +3,27 @@
 namespace HeimrichHannot\NotificationCenterPlus;
 
 
+use HeimrichHannot\StatusMessages\StatusMessage;
+
 class ModulePasswordNotificationCenterPlus extends \ModulePassword
 {
 	/**
+	 * Generate the module
+	 */
+	protected function compile()
+	{
+		if(!StatusMessage::isEmpty($this->objModel->id))
+		{
+			$this->Template->error = StatusMessage::generate($this->objModel->id);
+		}
+
+		return parent::compile();
+	}
+
+	/**
 	 * Send a lost password e-mail
-	 * @param object
+	 *
+	 * @param \MemberModel $objMember
 	 */
 	protected function sendPasswordLink($objMember)
 	{
@@ -61,6 +77,8 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
 		{
 			$this->jumpToOrReload($objJumpTo->row());
 		}
+
+		StatusMessage::addSuccess(sprintf($GLOBALS['TL_LANG']['notification_center_plus']['sendPasswordLink']['messageSuccess'], $arrTokens['recipient_email']), $this->objModel->id);
 
 		$this->reload();
 	}
