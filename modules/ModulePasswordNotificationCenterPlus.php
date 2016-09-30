@@ -12,12 +12,19 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
 	 */
 	protected function compile()
 	{
+		$strParent = parent::compile();
+
+		if($this->Template->error == $GLOBALS['TL_LANG']['MSC']['accountNotFound'])
+		{
+			StatusMessage::addError($GLOBALS['TL_LANG']['MSC']['accountNotFound'], $this->objModel->id);
+		}
+
 		if(!StatusMessage::isEmpty($this->objModel->id))
 		{
 			$this->Template->error = StatusMessage::generate($this->objModel->id);
 		}
 
-		return parent::compile();
+		return $strParent;
 	}
 
 	/**
