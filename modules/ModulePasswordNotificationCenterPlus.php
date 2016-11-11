@@ -58,7 +58,7 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
 				$v = \StringUtil::binToUuid($v);
 			}
 
-			$arrTokens['member_' . $k] = $v;
+			$arrTokens['member_' . $k] = specialchars($v);
 		}
 
 		// FIX: Add salutation token
