@@ -3,6 +3,7 @@
 namespace HeimrichHannot\NotificationCenterPlus;
 
 
+use HeimrichHannot\Haste\Util\Salutations;
 use HeimrichHannot\StatusMessages\StatusMessage;
 
 class ModulePasswordNotificationCenterPlus extends \ModulePassword
@@ -62,7 +63,7 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
 		}
 
 		// FIX: Add salutation token
-		$arrTokens['salutation_user'] = NotificationCenterPlus::createSalutation($GLOBALS['TL_LANGUAGE'], $objMember);
+		$arrTokens['salutation_user'] = Salutations::createSalutation($GLOBALS['TL_LANGUAGE'], $objMember);
 		// ENDFIX
 
 		$arrTokens['recipient_email'] = $objMember->email;

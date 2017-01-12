@@ -4,6 +4,7 @@ namespace HeimrichHannot\NotificationCenterPlus;
 
 use HeimrichHannot\Haste\Util\Arrays;
 use HeimrichHannot\Haste\Util\Files;
+use HeimrichHannot\Haste\Util\Salutations;
 use NotificationCenter\Model\Message;
 use NotificationCenter\Model\Notification;
 
@@ -64,10 +65,10 @@ class NotificationCenterPlus
 	public function addTokens($objMessage, &$arrTokens, $strLanguage, $objGatewayModel)
 	{
 		if (!isset($arrTokens['salutation_user']))
-			$arrTokens['salutation_user'] = static::createSalutation($strLanguage, \FrontendUser::getInstance());
+			$arrTokens['salutation_user'] = Salutations::createSalutation($strLanguage, \FrontendUser::getInstance());
 
 		if (!isset($arrTokens['salutation_form']))
-			$arrTokens['salutation_form'] = static::createSalutation($strLanguage, array(
+			$arrTokens['salutation_form'] = Salutations::createSalutation($strLanguage, array(
 				'gender' => $arrTokens['form_value_gender'],
 				'title' => $arrTokens['form_title'] ?: $arrTokens['form_academicTitle'],
 				'lastname' => $arrTokens['form_lastname']
@@ -76,7 +77,7 @@ class NotificationCenterPlus
 		if (in_array('isotope', \ModuleLoader::getActive()))
 		{
 			if (!isset($arrTokens['billing_address_form']))
-				$arrTokens['salutation_billing_address'] = static::createSalutation($strLanguage, array(
+				$arrTokens['salutation_billing_address'] = Salutations::createSalutation($strLanguage, array(
 					'gender' => $arrTokens['billing_address_gender'],
 					'title' => $arrTokens['billing_address_title'],
 					'lastname' => $arrTokens['billing_address_lastname']
@@ -190,102 +191,6 @@ class NotificationCenterPlus
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * @param $strLanguage
-	 * @param $varEntity object|array
-	 *
-	 * @return string
-	 */
-	public static function createSalutation($strLanguage, $varEntity, $blnInformal = false, $blnInformalFirstname = false)
-	{
-		if (is_array($varEntity))
-			$varEntity = Arrays::arrayToObject($varEntity);
-
-		$blnHasFirstname = $varEntity->firstname;
-		$blnHasLastname = $varEntity->lastname;
-		$blnHasTitle = $varEntity->title && $varEntity->title != '-' && $varEntity->title != 'Titel' && $varEntity->title != 'Title';
-
-		if($strLanguage)
-		{
-			\Controller::loadLanguageFile('default', $strLanguage);
-		}
-
-		switch ($strLanguage)
-		{
-			case 'en':
-				if ($blnInformal)
-				{
-					if ($blnHasFirstname && $blnInformalFirstname)
-					{
-						return $GLOBALS['TL_LANG']['notification_center_plus']['salutation'] .  ' ' .
-							$varEntity->firstname;
-					}
-					elseif ($blnHasLastname && !$blnInformalFirstname)
-					{
-						return $GLOBALS['TL_LANG']['notification_center_plus']['salutation'] .  ' ' .
-							$varEntity->lastname;
-					}
-					else
-					{
-						return $GLOBALS['TL_LANG']['notification_center_plus']['salutation'];
-					}
-				}
-				elseif ($blnHasLastname)
-				{
-					if ($blnHasTitle)
-						$strSalutation =
-							$GLOBALS['TL_LANG']['notification_center_plus']['salutation'] . ' ' . $varEntity->title;
-					else
-						$strSalutation =
-							$GLOBALS['TL_LANG']['notification_center_plus']['salutation' .
-							($varEntity->gender == 'female' ? 'Female' : 'Male')
-							];
-
-					return $strSalutation .  ' ' . $varEntity->lastname;
-				}
-				else
-				{
-					return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGeneric'];
-				}
-				break;
-			default:
-				// de
-				if ($blnInformal)
-				{
-					if ($blnHasFirstname && $blnInformalFirstname)
-					{
-						return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGenericInformal'] .  ' ' .
-						$varEntity->firstname;
-					}
-					elseif ($blnHasLastname && !$blnInformalFirstname)
-					{
-						return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGenericInformal'] .  ' ' .
-						$varEntity->lastname;
-					}
-					else
-					{
-						return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGenericInformal'];
-					}
-				}
-				elseif ($blnHasLastname && !$blnInformal)
-				{
-					$strSalutation = $GLOBALS['TL_LANG']['notification_center_plus'][
-									 'salutation' . ($varEntity->gender == 'female' ? 'Female' : 'Male')
-					];
-
-					if ($blnHasTitle)
-						$strSalutation .= ' ' . $varEntity->title;
-
-					return $strSalutation .  ' ' . $varEntity->lastname;
-				}
-				else
-				{
-					return $GLOBALS['TL_LANG']['notification_center_plus']['salutationGeneric'];
-				}
-				break;
 		}
 	}
 
