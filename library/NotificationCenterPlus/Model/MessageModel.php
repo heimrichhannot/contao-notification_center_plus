@@ -20,12 +20,12 @@ class MessageModel extends \NotificationCenter\Model\Message
 	 *
 	 * @return static The model or null if the result is empty
 	 */
-	public static function findPublishedById($intId, array $arrOptions = array())
+	public static function findPublishedById($intId, array $arrOptions = [])
 	{
 		$t = static::$strTable;
 
-		$arrColumns = array("$t.id=? AND $t.published=1");
-		$arrValues  = array($intId);
+		$arrColumns = ["$t.id=? AND $t.published=1"];
+		$arrValues  = [$intId];
 
 		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
 	}

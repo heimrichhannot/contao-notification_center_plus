@@ -12,17 +12,17 @@
 /**
  * Register the namespaces
  */
-ClassLoader::addNamespaces(array
-(
-	'HeimrichHannot',
-));
+ClassLoader::addNamespaces(
+    [
+	'HeimrichHannot',]
+);
 
 
 /**
  * Register the classes
  */
-ClassLoader::addClasses(array
-(
+ClassLoader::addClasses(
+    [
 	// Library
 	'HeimrichHannot\NotificationCenterPlus\Gateway\Email'                        => 'system/modules/notification_center_plus/library/NotificationCenterPlus/Gateway/Email.php',
 	'HeimrichHannot\NotificationCenterPlus\Util\StringUtil'                      => 'system/modules/notification_center_plus/library/NotificationCenterPlus/Util/StringUtil.php',
@@ -31,5 +31,5 @@ ClassLoader::addClasses(array
 	'HeimrichHannot\NotificationCenterPlus\MessageModel'                         => 'system/modules/notification_center_plus/library/NotificationCenterPlus/Model/MessageModel.php',
 
 	// Modules
-	'HeimrichHannot\NotificationCenterPlus\ModulePasswordNotificationCenterPlus' => 'system/modules/notification_center_plus/modules/ModulePasswordNotificationCenterPlus.php',
-));
+	'HeimrichHannot\NotificationCenterPlus\ModulePasswordNotificationCenterPlus' => 'system/modules/notification_center_plus/modules/ModulePasswordNotificationCenterPlus.php',]
+);

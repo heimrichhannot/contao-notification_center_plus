@@ -54,7 +54,7 @@ class NotificationCenterPlus
 			return array_filter($arrStylesheetPaths);
 		}
 
-		return array();
+		return [];
 	}
 
 	public static function getStylesheetContents(Message $objMessage, $strMode)
@@ -68,20 +68,22 @@ class NotificationCenterPlus
 			$arrTokens['salutation_user'] = Salutations::createSalutation($strLanguage, \FrontendUser::getInstance());
 
 		if (!isset($arrTokens['salutation_form']))
-			$arrTokens['salutation_form'] = Salutations::createSalutation($strLanguage, array(
+			$arrTokens['salutation_form'] = Salutations::createSalutation($strLanguage, [
 				'gender' => $arrTokens['form_value_gender'],
 				'title' => $arrTokens['form_title'] ?: $arrTokens['form_academicTitle'],
 				'lastname' => $arrTokens['form_lastname']
-			));
+            ]
+            );
 
 		if (in_array('isotope', \ModuleLoader::getActive()))
 		{
 			if (!isset($arrTokens['billing_address_form']))
-				$arrTokens['salutation_billing_address'] = Salutations::createSalutation($strLanguage, array(
+				$arrTokens['salutation_billing_address'] = Salutations::createSalutation($strLanguage, [
 					'gender' => $arrTokens['billing_address_gender'],
 					'title' => $arrTokens['billing_address_title'],
 					'lastname' => $arrTokens['billing_address_lastname']
-				));
+                ]
+                );
 		}
 
 		$this->addContextTokens($objMessage, $arrTokens, $strLanguage);
@@ -89,9 +91,9 @@ class NotificationCenterPlus
 		return true;
 	}
 
-	public static function getTokensFromEntity($objEntity, $strPrefix, $arrFields = array())
+	public static function getTokensFromEntity($objEntity, $strPrefix, $arrFields = [])
 	{
-		$arrTokens = array();
+		$arrTokens = [];
 
 		foreach ($objEntity->row() as $strKey => $varValue)
 		{
@@ -204,7 +206,7 @@ class NotificationCenterPlus
 
 	public static function getNotificationsAsOptions($strType)
 	{
-		$arrChoices = array();
+		$arrChoices = [];
 		$objNotifications = \Database::getInstance()->execute("SELECT id,title FROM tl_nc_notification WHERE type='$strType' ORDER BY title");
 
 		while ($objNotifications->next()) {
@@ -216,7 +218,7 @@ class NotificationCenterPlus
 
 	public function getNotificationMessagesAsOptions()
 	{
-		$arrOptions = array();
+		$arrOptions = [];
 
 		if (($objMessages = Message::findAll()) === null) {
 			return $arrOptions;

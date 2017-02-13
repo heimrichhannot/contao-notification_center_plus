@@ -49,7 +49,7 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
 		$objMember->activation = $confirmationId;
 		$objMember->save();
 
-		$arrTokens = array();
+		$arrTokens = [];
 
 		// Add member tokens
 		foreach ($objMember->row() as $k => $v)

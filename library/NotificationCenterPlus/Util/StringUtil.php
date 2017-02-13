@@ -23,7 +23,7 @@ class StringUtil extends \NotificationCenter\Util\StringUtil
 	 */
 	public static function getTokenAttachments($strAttachmentTokens, array $arrTokens)
 	{
-		$arrAttachments = array();
+		$arrAttachments = [];
 
 		if ($strAttachmentTokens == '') {
 			return $arrAttachments;

@@ -25,13 +25,13 @@ foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'] as $strT
 	if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html']))
 		$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'] = array_merge(
 			$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'],
-			array('salutation_user', 'salutation_form', 'salutation_billing_address')
+            ['salutation_user', 'salutation_form', 'salutation_billing_address']
 		);
 
 	if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text']))
 		$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'] = array_merge(
 			$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'],
-			array('salutation_user', 'salutation_form', 'salutation_billing_address')
+            ['salutation_user', 'salutation_form', 'salutation_billing_address']
 		);
 }
 
@@ -42,17 +42,18 @@ foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $ar
 {
 	foreach ($arrTypes as $strConcreteType => &$arrType)
 	{
-		foreach (array('email_subject', 'email_text', 'email_html') as $strName)
+		foreach (['email_subject', 'email_text', 'email_html'] as $strName)
 		{
 			if (isset($arrType[$strName]))
 			{
-				$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName] = array_unique(array_merge(array(
+				$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName] = array_unique(array_merge(
+                                                                                                                              [
 					'env_*',
 					'page_*',
 					'user_*',
 					'date',
 					'last_update'
-				), $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName]));
+                                                                                                                              ], $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName]));
 			}
 		}
 	}
@@ -61,4 +62,4 @@ foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $ar
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['sendNotificationMessage'][] = array('\HeimrichHannot\NotificationCenterPlus\NotificationCenterPlus', 'addTokens');
+$GLOBALS['TL_HOOKS']['sendNotificationMessage'][] = ['\HeimrichHannot\NotificationCenterPlus\NotificationCenterPlus', 'addTokens'];

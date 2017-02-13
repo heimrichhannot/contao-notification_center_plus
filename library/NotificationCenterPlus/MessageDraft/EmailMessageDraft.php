@@ -10,58 +10,87 @@
 
 namespace HeimrichHannot\NotificationCenterPlus\MessageDraft;
 
+use HeimrichHannot\Haste\Dca\General;
 use HeimrichHannot\HastePlus\DOM;
 use HeimrichHannot\NotificationCenterPlus\NotificationCenterPlus;
 use HeimrichHannot\NotificationCenterPlus\Util\StringUtil;
-use NotificationCenter\Util\String;
+use NotificationCenter\Model\Language;
+use NotificationCenter\Model\Message;
 
 class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDraft
 {
+    public function __construct(Message $objMessage, Language $objLanguage, $arrTokens)
+    {
+        // add overridable properties
+        if (is_array($objMessage->overridableProperties) && is_array($objMessage->overridableEntities))
+        {
+            foreach ($objMessage->overridableProperties as $strProperty)
+            {
+                $objLanguage->{$strProperty} = General::getOverridableProperty($strProperty, array_merge([$objLanguage], $objMessage->overridableEntities));
+            }
+        }
 
-	/**
-	 * Returns the html body as a string
-	 *
-	 * @return  string
-	 */
-	public function getHtmlBody()
-	{
-		$strHtmlBody = parent::getHtmlBody();
+        parent::__construct(
+            $objMessage,
+            $objLanguage,
+            $arrTokens
+        );
+    }
 
-		if ($this->getMessage()->convertPtoBr)
-			$strHtmlBody = NotificationCenterPlus::convertPToBr($strHtmlBody);
 
-		if ($strHtmlBody && $this->getMessage()->addStylesheets)
-		{
-			$strHtmlBody = NotificationCenterPlus::addHeaderCss($strHtmlBody, $this->getMessage());
+    /**
+     * Returns the html body as a string
+     *
+     * @return  string
+     */
+    public function getHtmlBody()
+    {
+        $strHtmlBody = parent::getHtmlBody();
 
-			$strHtmlBody = DOM::convertToInlineCss($strHtmlBody, implode(' ',
-				NotificationCenterPlus::getStylesheetContents($this->getMessage(), NotificationCenterPlus::CSS_MODE_INLINE)));
-		}
+        if ($this->getMessage()->convertPtoBr)
+        {
+            $strHtmlBody = NotificationCenterPlus::convertPToBr($strHtmlBody);
+        }
 
-		return $strHtmlBody;
-	}
+        if ($strHtmlBody && $this->getMessage()->addStylesheets)
+        {
+            $strHtmlBody = NotificationCenterPlus::addHeaderCss($strHtmlBody, $this->getMessage());
 
-	public function getAttachments()
-	{
-		// Token attachments
-		$arrAttachments = StringUtil::getTokenAttachments($this->objLanguage->attachment_tokens, $this->arrTokens);
+            $strHtmlBody = DOM::convertToInlineCss(
+                $strHtmlBody,
+                implode(
+                    ' ',
+                    NotificationCenterPlus::getStylesheetContents($this->getMessage(), NotificationCenterPlus::CSS_MODE_INLINE)
+                )
+            );
+        }
 
-		// Add static attachments
-		$arrStaticAttachments = deserialize($this->objLanguage->attachments, true);
+        return $strHtmlBody;
+    }
 
-		if (!empty($arrStaticAttachments)) {
-			$objFiles = \FilesModel::findMultipleByUuids($arrStaticAttachments);
+    public function getAttachments()
+    {
+        // Token attachments
+        $arrAttachments = StringUtil::getTokenAttachments($this->objLanguage->attachment_tokens, $this->arrTokens);
 
-			if ($objFiles === null) {
-				return $arrAttachments;
-			}
+        // Add static attachments
+        $arrStaticAttachments = deserialize($this->objLanguage->attachments, true);
 
-			while ($objFiles->next()) {
-				$arrAttachments[] = TL_ROOT . '/' . $objFiles->path;
-			}
-		}
+        if (!empty($arrStaticAttachments))
+        {
+            $objFiles = \FilesModel::findMultipleByUuids($arrStaticAttachments);
 
-		return $arrAttachments;
-	}
+            if ($objFiles === null)
+            {
+                return $arrAttachments;
+            }
 
+            while ($objFiles->next())
+            {
+                $arrAttachments[] = TL_ROOT . '/' . $objFiles->path;
+            }
+        }
+
+        return $arrAttachments;
+    }
 }
