@@ -34,8 +34,8 @@ You now have the option to use overridable properties available in [heimrichhann
 ```
 public static function sendNotificationMessage(Message $objMessage, &$arrTokens, $strLanguage, $objGatewayModel)
 {
-    $objMessage->overridableProperties = ['email_sender_address', 'email_sender_name', 'email_replyTo', 'email_subject'];
-    $objMessage->overridableEntities = [$objEvent];
+    $arrTokens['overridableProperties'] = ['email_sender_address', 'email_sender_name', 'email_replyTo', 'email_subject'];
+    $arrTokens['overridableEntities'] = [['tl_calendar_events', $intEventId]];
 }
 ```
 
