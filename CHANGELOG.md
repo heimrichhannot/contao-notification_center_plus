@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.27] - 2017-02-30
+
+### Fixed
+- `##env_date##` was not replaced correct
+
+### Added
+- `##env_request_path##` token without query strings
+- added context token reference within `README.md`
+
 ## [1.0.26] - 2017-02-14
 
 ### Added

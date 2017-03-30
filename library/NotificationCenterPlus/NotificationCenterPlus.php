@@ -5,6 +5,7 @@ namespace HeimrichHannot\NotificationCenterPlus;
 use HeimrichHannot\Haste\Util\Arrays;
 use HeimrichHannot\Haste\Util\Files;
 use HeimrichHannot\Haste\Util\Salutations;
+use HeimrichHannot\Haste\Util\Url;
 use NotificationCenter\Model\Message;
 use NotificationCenter\Model\Notification;
 
@@ -131,6 +132,7 @@ class NotificationCenterPlus
 		$arrTokens['env_url'] = \Idna::decode(\Environment::get('url'));
 		$arrTokens['env_path'] = \Idna::decode(\Environment::get('base'));
 		$arrTokens['env_request'] = \Idna::decode(\Environment::get('indexFreeRequest'));
+        $arrTokens['env_request_path'] = \Idna::decode(Url::removeAllParametersFromUri(\Environment::get('indexFreeRequest')));
 		$arrTokens['env_ip'] = \Idna::decode(\Environment::get('ip'));
 		$arrTokens['env_referer'] = \System::getReferer();
 		$arrTokens['env_files_url'] = TL_FILES_URL;
@@ -139,7 +141,7 @@ class NotificationCenterPlus
 
 
 		// add date tokens
-		$arrTokens['date'] = \Controller::replaceInsertTags('{{date}}');
+		$arrTokens['date'] = \Controller::replaceInsertTags(sprintf('{{date::%s}}', \Config::get('dateFormat')));
 		$arrTokens['last_update'] = \Controller::replaceInsertTags('{{last_update}}');
 
 		if(TL_MODE == 'FE')
