@@ -31,7 +31,7 @@ class StringUtil extends \NotificationCenter\Util\StringUtil
 
 		foreach (trimsplit(',', $strAttachmentTokens) as $strToken) {
 			if (version_compare(VERSION . '.' . BUILD, '3.5.1', '<')) {
-				$strParsedToken = \String::parseSimpleTokens($strToken, $arrTokens);
+				$strParsedToken = \StringUtil::parseSimpleTokens($strToken, $arrTokens);
 			} else {
 				$strParsedToken = \StringUtil::parseSimpleTokens($strToken, $arrTokens);
 			}
