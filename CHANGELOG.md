@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.29] - 2017-04-12
+- created new tag
+
 ## [1.0.28] - 2017-04-06
 
 ### Changed
