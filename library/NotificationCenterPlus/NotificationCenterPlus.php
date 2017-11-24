@@ -141,8 +141,8 @@ class NotificationCenterPlus
 
 
 		// add date tokens
-		$arrTokens['date'] = \Controller::replaceInsertTags(sprintf('{{date::%s}}', \Config::get('dateFormat')));
-		$arrTokens['last_update'] = \Controller::replaceInsertTags('{{last_update}}');
+		$arrTokens['date'] = \Controller::replaceInsertTags(sprintf('{{date::%s}}', \Config::get('dateFormat')), false);
+		$arrTokens['last_update'] = \Controller::replaceInsertTags('{{last_update}}', false);
 
 		if(TL_MODE == 'FE')
 		{

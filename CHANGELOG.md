@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.30] - 2017-11-24
+
+### Fixed
+- Contao 4 esi tag message error in backend queue info action, caused by cached inserttags (prevented caching)
+
 ## [1.0.29] - 2017-04-12
 - created new tag
 
