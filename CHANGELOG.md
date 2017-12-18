@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.31] - 2017-11-24
+
+### Fixed
+- inserttags for usage in contao commands
+
 ## [1.0.30] - 2017-11-24
 
 ### Fixed
