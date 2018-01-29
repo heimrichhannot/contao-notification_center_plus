@@ -8,86 +8,104 @@ use HeimrichHannot\StatusMessages\StatusMessage;
 
 class ModulePasswordNotificationCenterPlus extends \ModulePassword
 {
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
-		$strParent = parent::compile();
+    /**
+     * Generate the module
+     */
+    protected function compile()
+    {
+        $strParent = parent::compile();
 
-		if($this->Template->error == $GLOBALS['TL_LANG']['MSC']['accountNotFound'])
-		{
-			StatusMessage::addError($GLOBALS['TL_LANG']['MSC']['accountNotFound'], $this->objModel->id);
-		}
+        if ($this->Template->error == $GLOBALS['TL_LANG']['MSC']['accountNotFound'])
+        {
+            StatusMessage::addError($GLOBALS['TL_LANG']['MSC']['accountNotFound'], $this->objModel->id);
+        }
 
-		if(!StatusMessage::isEmpty($this->objModel->id))
-		{
-			$this->Template->error = StatusMessage::generate($this->objModel->id);
-		}
+        if (!StatusMessage::isEmpty($this->objModel->id))
+        {
+            $this->Template->error = StatusMessage::generate($this->objModel->id);
+        }
 
-		return $strParent;
-	}
+        return $strParent;
+    }
 
-	/**
-	 * Send a lost password e-mail
-	 *
-	 * @param \MemberModel $objMember
-	 */
-	protected function sendPasswordLink($objMember)
-	{
-		$objNotification = \NotificationCenter\Model\Notification::findByPk($this->nc_notification);
+    /**
+     * Send a lost password e-mail
+     *
+     * @param \MemberModel $objMember
+     */
+    protected function sendPasswordLink($objMember)
+    {
+        $objNotification = \NotificationCenter\Model\Notification::findByPk($this->nc_notification);
 
-		if ($objNotification === null) {
-			$this->log('The notification was not found ID ' . $this->nc_notification, __METHOD__, TL_ERROR);
-			return;
-		}
+        if ($objNotification === null)
+        {
+            $this->log('The notification was not found ID ' . $this->nc_notification, __METHOD__, TL_ERROR);
 
-		$confirmationId = md5(uniqid(mt_rand(), true));
+            return;
+        }
 
-		// Store the confirmation ID
-		$objMember = \MemberModel::findByPk($objMember->id);
-		$objMember->activation = $confirmationId;
-		$objMember->save();
+        if (version_compare(VERSION, '4.4.12', '<'))
+        {
+            $strToken = md5(uniqid(mt_rand(), true));
+        }
+        else
+        {
+            $strToken = 'PW' . substr(md5(uniqid(mt_rand(), true)), 2);
+        }
 
-		$arrTokens = [];
+        // Store the confirmation ID
+        $objMember             = \MemberModel::findByPk($objMember->id);
+        $objMember->activation = $strToken;
+        $objMember->save();
 
-		// Add member tokens
-		foreach ($objMember->row() as $k => $v)
-		{
-			if (\Validator::isBinaryUuid($v))
-			{
-				$v = \StringUtil::binToUuid($v);
-			}
+        $arrTokens = [];
 
-			$arrTokens['member_' . $k] = specialchars($v);
-		}
+        // Add member tokens
+        foreach ($objMember->row() as $k => $v)
+        {
+            if (\Validator::isBinaryUuid($v))
+            {
+                $v = \StringUtil::binToUuid($v);
+            }
 
-		// FIX: Add salutation token
-		$arrTokens['salutation_user'] = Salutations::createSalutation($GLOBALS['TL_LANGUAGE'], $objMember);
-		// ENDFIX
+            $arrTokens['member_' . $k] = specialchars($v);
+        }
 
-		$arrTokens['recipient_email'] = $objMember->email;
-		$arrTokens['domain'] = \Idna::decode(\Environment::get('host'));
-		$arrTokens['link'] = \Idna::decode(\Environment::get('base')) . \Environment::get('request') . (($GLOBALS['TL_CONFIG']['disableAlias'] || strpos(\Environment::get('request'), '?') !== false) ? '&' : '?') . 'token=' . $confirmationId;
+        // FIX: Add salutation token
+        $arrTokens['salutation_user'] = Salutations::createSalutation($GLOBALS['TL_LANGUAGE'], $objMember);
+        // ENDFIX
 
-		// FIX: Add custom change password jump to
-		if (($objJumpTo = $this->objModel->getRelated('changePasswordJumpTo')) !== null)
-		{
-			$arrTokens['link'] = \Idna::decode(\Environment::get('base')) . \Controller::generateFrontendUrl($objJumpTo->row(), '?token=' . $confirmationId);
-		}
-		// ENDFIX
+        $arrTokens['recipient_email'] = $objMember->email;
+        $arrTokens['domain']          = \Idna::decode(\Environment::get('host'));
+        $arrTokens['link']            =
+            \Idna::decode(\Environment::get('base')) . \Environment::get('request') . (($GLOBALS['TL_CONFIG']['disableAlias']
+                                                                                        || strpos(
+                                                                                               \Environment::get('request'),
+                                                                                               '?'
+                                                                                           ) !== false) ? '&' : '?') . 'token=' . $strToken;
 
-		$objNotification->send($arrTokens, $GLOBALS['TL_LANGUAGE']);
-		$this->log('A new password has been requested for user ID ' . $objMember->id . ' (' . $objMember->email . ')', __METHOD__, TL_ACCESS);
+        // FIX: Add custom change password jump to
+        if (($objJumpTo = $this->objModel->getRelated('changePasswordJumpTo')) !== null)
+        {
+            $arrTokens['link'] =
+                \Idna::decode(\Environment::get('base')) . \Controller::generateFrontendUrl($objJumpTo->row(), '?token=' . $strToken);
+        }
+        // ENDFIX
 
-		// Check whether there is a jumpTo page
-		if (($objJumpTo = $this->objModel->getRelated('jumpTo')) !== null)
-		{
-			$this->jumpToOrReload($objJumpTo->row());
-		}
+        $objNotification->send($arrTokens, $GLOBALS['TL_LANGUAGE']);
+        $this->log('A new password has been requested for user ID ' . $objMember->id . ' (' . $objMember->email . ')', __METHOD__, TL_ACCESS);
 
-		StatusMessage::addSuccess(sprintf($GLOBALS['TL_LANG']['notification_center_plus']['sendPasswordLink']['messageSuccess'], $arrTokens['recipient_email']), $this->objModel->id);
+        // Check whether there is a jumpTo page
+        if (($objJumpTo = $this->objModel->getRelated('jumpTo')) !== null)
+        {
+            $this->jumpToOrReload($objJumpTo->row());
+        }
 
-		$this->reload();
-	}
+        StatusMessage::addSuccess(
+            sprintf($GLOBALS['TL_LANG']['notification_center_plus']['sendPasswordLink']['messageSuccess'], $arrTokens['recipient_email']),
+            $this->objModel->id
+        );
+
+        $this->reload();
+    }
 }

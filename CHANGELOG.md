@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.32] - 2018-01-29
+
+### Fixed
+- ModulePasswordNotificationCenterPlus for Contao 4.4.12+
+
 ## [1.0.31] - 2017-11-24
 
 ### Fixed
