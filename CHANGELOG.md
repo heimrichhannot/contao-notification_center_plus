@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.33] - 2018-09-05
+
+### Fixed
+- getToken by overwriting QueuedMessage model class
+
 ## [1.0.32] - 2018-01-29
 
 ### Fixed

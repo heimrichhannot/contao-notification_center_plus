@@ -19,50 +19,37 @@ $GLOBALS['FE_MOD']['user']['lostPasswordNotificationCenterPlus'] = 'HeimrichHann
 $GLOBALS['NOTIFICATION_CENTER']['GATEWAY']['email'] = 'HeimrichHannot\NotificationCenterPlus\Gateway\Email';
 
 /**
+ * Models
+ */
+$GLOBALS['TL_MODELS']['tl_nc_queue'] = 'HeimrichHannot\NotificationCenterPlus\QueuedMessagePlus';
+
+/**
  * Notification Center Notification Types
  */
-foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'] as $strType => $strField)
-{
-    if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html']))
-    {
-        $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'] = array_merge(
-            $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'],
-            ['salutation_user', 'salutation_form', 'salutation_billing_address']
-        );
+foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'] as $strType => $strField) {
+    if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'])) {
+        $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'] = array_merge($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_html'], ['salutation_user', 'salutation_form', 'salutation_billing_address']);
     }
 
-    if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text']))
-    {
-        $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'] = array_merge(
-            $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'],
-            ['salutation_user', 'salutation_form', 'salutation_billing_address']
-        );
+    if (isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'])) {
+        $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'] = array_merge($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao'][$strType]['email_text'], ['salutation_user', 'salutation_form', 'salutation_billing_address']);
     }
 }
 
 /**
  * Notification Center Tokens
  */
-foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $arrTypes)
-{
-    foreach ($arrTypes as $strConcreteType => &$arrType)
-    {
-        foreach (['email_subject', 'email_text', 'email_html'] as $strName)
-        {
-            if (isset($arrType[$strName]))
-            {
-                $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName] = array_unique(
-                    array_merge(
-                        [
-                            'env_*',
-                            'page_*',
-                            'user_*',
-                            'date',
-                            'last_update',
-                        ],
-                        $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName]
-                    )
-                );
+foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $arrTypes) {
+    foreach ($arrTypes as $strConcreteType => &$arrType) {
+        foreach (['email_subject', 'email_text', 'email_html'] as $strName) {
+            if (isset($arrType[$strName])) {
+                $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName] = array_unique(array_merge([
+                    'env_*',
+                    'page_*',
+                    'user_*',
+                    'date',
+                    'last_update',
+                ], $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName]));
             }
         }
     }
