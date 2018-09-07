@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.34] - 2018-09-07
+
+### Fixed
+- NotificationCenterPlus::addTokens() salutation_form
+
 ## [1.0.33] - 2018-09-05
 
 ### Fixed
