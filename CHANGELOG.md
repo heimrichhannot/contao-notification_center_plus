@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.35] - 2018-10-05
+
+### Fixed
+- version compare in `ModulePasswordNotificationCenterPlus`
+
 ## [1.0.34] - 2018-09-07
 
 ### Fixed

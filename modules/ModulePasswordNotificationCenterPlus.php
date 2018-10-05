@@ -3,8 +3,11 @@
 namespace HeimrichHannot\NotificationCenterPlus;
 
 
+use Contao\Input;
+use Contao\System;
 use HeimrichHannot\Haste\Util\Salutations;
 use HeimrichHannot\StatusMessages\StatusMessage;
+use function Sodium\version_string;
 
 class ModulePasswordNotificationCenterPlus extends \ModulePassword
 {
@@ -27,7 +30,7 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
 
         return $strParent;
     }
-
+    
     /**
      * Send a lost password e-mail
      *
@@ -44,7 +47,7 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
             return;
         }
 
-        if (version_compare(VERSION, '4.4.12', '<'))
+        if (version_compare(VERSION, '4.4', '<=') && version_compare(BUILD, '12', '<'))
         {
             $strToken = md5(uniqid(mt_rand(), true));
         }
@@ -88,7 +91,7 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
         if (($objJumpTo = $this->objModel->getRelated('changePasswordJumpTo')) !== null)
         {
             $arrTokens['link'] =
-                \Idna::decode(\Environment::get('base')) . \Controller::generateFrontendUrl($objJumpTo->row(), '?token=' . $strToken);
+                \Idna::decode(\Environment::get('base')) . \Controller::generateFrontendUrl($objJumpTo->row()) . '?token=' . $strToken;
         }
         // ENDFIX
 
@@ -109,3 +112,4 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
         $this->reload();
     }
 }
+
