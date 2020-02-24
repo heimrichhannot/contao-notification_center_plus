@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.36] - 2020-02-24
+
+### Added
+- reset state in template 
+
 ## [1.0.35] - 2018-10-05
 
 ### Fixed

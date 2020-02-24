@@ -3,9 +3,9 @@
 namespace HeimrichHannot\NotificationCenterPlus;
 
 
-use Contao\Input;
-use Contao\System;
+use Contao\MemberModel;
 use HeimrichHannot\Haste\Util\Salutations;
+use HeimrichHannot\Request\Request;
 use HeimrichHannot\StatusMessages\StatusMessage;
 use function Sodium\version_string;
 
@@ -26,6 +26,10 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
         if (!StatusMessage::isEmpty($this->objModel->id))
         {
             $this->Template->error = StatusMessage::generate($this->objModel->id);
+        }
+
+	if(Request::getGet('token') && MemberModel::findOneByActivation(Request::getGet('token'))) {
+            $this->Template->reset = true;
         }
 
         return $strParent;
