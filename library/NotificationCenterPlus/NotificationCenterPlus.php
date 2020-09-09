@@ -2,6 +2,7 @@
 
 namespace HeimrichHannot\NotificationCenterPlus;
 
+use Contao\System;
 use HeimrichHannot\Haste\Util\Arrays;
 use HeimrichHannot\Haste\Util\Files;
 use HeimrichHannot\Haste\Util\Salutations;
@@ -128,9 +129,18 @@ class NotificationCenterPlus
         $arrTokens['env_request_path'] = \Idna::decode(Url::removeAllParametersFromUri(\Environment::get('indexFreeRequest')));
         $arrTokens['env_ip']           = \Idna::decode(\Environment::get('ip'));
         $arrTokens['env_referer']      = \System::getReferer();
-        $arrTokens['env_files_url']    = TL_FILES_URL;
-        $arrTokens['env_plugins_url']  = TL_ASSETS_URL;
-        $arrTokens['env_script_url']   = TL_ASSETS_URL;
+
+        if (version_compare(VERSION, '4.4') >= 0) {
+            $arrTokens['env_files_url'] = System::getContainer()->get('contao.assets.files_context')->getStaticUrl();
+            $assetUrl = System::getContainer()->get('contao.assets.assets_context')->getStaticUrl();
+        } else {
+            $arrTokens['env_files_url']    = TL_FILES_URL;
+            $assetUrl = TL_ASSETS_URL;
+        }
+
+        $arrTokens['env_plugins_url']  = $assetUrl;
+        $arrTokens['env_script_url']   = $assetUrl;
+
 
 
         // add date tokens
