@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.38] - 2020-09-14
+- allow status_messages 2.0
+
 ## [1.0.37] - 2020-09-09
 - fixed constant error in contao 4.9 cron command
 - removed idea folder
