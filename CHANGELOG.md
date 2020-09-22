@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.39] - 2020-09-22
+- fixed `contao.assets.files_context` service issue
+
 ## [1.0.38] - 2020-09-14
 - allow status_messages 2.0
 
