@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2020-09-24
+- added ics generation for attachments
+- code style
+
 ## [1.0.39] - 2020-09-22
 - fixed `contao.assets.files_context` service issue
 

@@ -2,11 +2,16 @@
 
 namespace HeimrichHannot\NotificationCenterPlus;
 
+use Contao\Environment;
+use Contao\StringUtil;
 use Contao\System;
+use Eluceo\iCal\Component\Calendar;
+use Eluceo\iCal\Component\Event;
 use HeimrichHannot\Haste\Util\Arrays;
 use HeimrichHannot\Haste\Util\Files;
 use HeimrichHannot\Haste\Util\Salutations;
 use HeimrichHannot\Haste\Util\Url;
+use NotificationCenter\Model\Language;
 use NotificationCenter\Model\Message;
 use NotificationCenter\Model\Notification;
 
@@ -84,6 +89,7 @@ class NotificationCenterPlus
         }
 
         $this->addContextTokens($objMessage, $arrTokens, $strLanguage);
+        $this->addIcsAttachmentToken($objMessage, $arrTokens, $strLanguage);
 
         return true;
     }
@@ -216,5 +222,88 @@ class NotificationCenterPlus
         }
 
         return $arrOptions;
+    }
+
+    protected function addIcsAttachmentToken($message, &$tokens, $language)
+    {
+        // get the language
+        if (null === ($languageModel = Language::findByMessageAndLanguageOrFallback($message, $language))) {
+            return;
+        }
+
+        // remove token hashes
+        $titleField       = str_replace('#', '', $languageModel->ics_title_field);
+        $descriptionField = str_replace('#', '', $languageModel->ics_description_field);
+        $locationField    = str_replace('#', '', $languageModel->ics_location_field);
+        $urlField         = str_replace('#', '', $languageModel->ics_url_field);
+        $startDateField   = str_replace('#', '', $languageModel->ics_start_date_field);
+        $endDateField     = str_replace('#', '', $languageModel->ics_end_date_field);
+        $addTimeField     = str_replace('#', '', $languageModel->ics_add_time_field);
+        $startTimeField   = str_replace('#', '', $languageModel->ics_start_time_field);
+        $endTimeField     = str_replace('#', '', $languageModel->ics_end_time_field);
+
+        // prepare data
+        $addTime = $languageModel->ics_add_time && $addTimeField && isset($tokens[$addTimeField]) && $tokens[$addTimeField];
+        $end     = null;
+
+        if ($addTime && $startTimeField && isset($tokens[$startTimeField]) && $tokens[$startTimeField]) {
+            $start = (new \DateTime())->setTimestamp($tokens[$startTimeField]);
+        } else {
+            $start = (new \DateTime())->setTimestamp($tokens[$startDateField]);
+            $start->setTime(0, 0, 0);
+        }
+
+        if ($endDateField && isset($tokens[$endDateField]) && $tokens[$endDateField]) {
+            // workaround for allday events
+            $end = (new \DateTime())->setTimestamp($tokens[$endDateField] + ($addTime ? 0 : 86400));
+            $end->setTime(0, 0, 0);
+        }
+
+        if ($addTime && $endTimeField && isset($tokens[$endTimeField]) && $tokens[$endTimeField]) {
+            $end = (new \DateTime())->setTimestamp($tokens[$endTimeField]);
+        }
+
+        // create the ics event
+        $event = new Event();
+
+        $event->setNoTime(!$addTime);
+        $event->setDtStart($start);
+
+        if (null !== $end) {
+            $event->setDtEnd($end);
+        }
+
+        if ($titleField && isset($tokens[$titleField])) {
+            $event->setSummary(strip_tags($tokens[$titleField]));
+        }
+
+        if ($descriptionField && isset($tokens[$descriptionField])) {
+            $event->setDescriptionHTML($tokens[$descriptionField]);
+        }
+
+        if ($locationField && isset($tokens[$locationField])) {
+            $event->setLocation($tokens[$locationField]);
+        }
+
+        if ($urlField && isset($tokens[$urlField])) {
+            $event->setUrl($tokens[$urlField]);
+        }
+
+        // create the ics calendar
+        $calendar = new Calendar(Environment::get('url'));
+
+        $calendar->addComponent($event);
+
+        $ics = $calendar->render();
+
+        if (!$ics) {
+            return;
+        }
+
+        $path = 'system/tmp/date-' . (md5(rand(0, 9999999999))) . '.ics';
+
+        file_put_contents(TL_ROOT . '/' . $path, $ics);
+
+        $tokens['ics_attachment_token'] = $path;
     }
 }
