@@ -6,14 +6,20 @@ Extends the notification center with additional features.
 - header and inline css can be defined (automatic inlining support)
 - additional salutation tokens for the currently logged in frontend user and the form (##salutation_user##, ##salutation_form##)
 - the lost password module now has a separate jumpTo for changing the password
+- ics files can be generated on the fly out of notification center tokens and will then be added to the attachments
 
 ## Tokens
 
+### Adding an automatically generated ICS file to the attachment of a notification
+
+1. Create your notification as usual.
+1. Add the token `##ics_attachment_token##` to the attachment tokens in the message's `tl_nc_language` record and activate the option at the bottom of the form.
+1. Now you can add the tokens to the different fields to your wishes.
+
 ### context tokens
 
-Notification center plus adds context tokens, like environment variables, and page information to the token array, as the 
+Notification center plus adds context tokens, like environment variables, and page information to the token array, as these
 are not available if sending later per cron.
-
 
 | Token        | Example
 | ------------- |:-------------:|

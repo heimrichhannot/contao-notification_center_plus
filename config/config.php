@@ -52,6 +52,40 @@ foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $ar
                 ], $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName]));
             }
         }
+
+        if (isset($arrType['attachment_tokens'])) {
+            $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType]['attachment_tokens'] = array_unique(array_merge([
+                'ics_attachment_token',
+            ], $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType]['attachment_tokens']));
+        }
+    }
+}
+
+foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $arrTypes) {
+    foreach ($arrTypes as $strConcreteType => &$arrType) {
+        foreach (['email_subject', 'email_text', 'email_html'] as $strName) {
+            if (isset($arrType[$strName])) {
+                $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName] = array_unique(array_merge([
+                    'env_*',
+                    'page_*',
+                    'user_*',
+                    'date',
+                    'last_update',
+                ], $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName]));
+            }
+        }
+
+        if (isset($arrType['attachment_tokens'])) {
+            $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType]['attachment_tokens'] = array_unique(array_merge([
+                'ics_attachment_token',
+            ], $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType]['attachment_tokens']));
+        }
+
+        foreach (['ics_title_field', 'ics_description_field', 'ics_location_field', 'ics_url_field', 'ics_start_date_field', 'ics_end_date_field', 'ics_add_time_field', 'ics_start_time_field', 'ics_end_time_field'] as $strName) {
+            if (!isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName])) {
+                $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName] = $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType]['email_subject'];
+            }
+        }
     }
 }
 

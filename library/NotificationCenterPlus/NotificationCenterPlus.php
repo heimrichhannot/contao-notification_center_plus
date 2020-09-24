@@ -227,7 +227,7 @@ class NotificationCenterPlus
     protected function addIcsAttachmentToken($message, &$tokens, $language)
     {
         // get the language
-        if (null === ($languageModel = Language::findByMessageAndLanguageOrFallback($message, $language))) {
+        if (null === ($languageModel = Language::findByMessageAndLanguageOrFallback($message, $language)) || !$languageModel->ics_attachment) {
             return;
         }
 
