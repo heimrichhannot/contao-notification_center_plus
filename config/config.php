@@ -81,7 +81,7 @@ foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $ar
             ], $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType]['attachment_tokens']));
         }
 
-        foreach (['ics_title_field', 'ics_description_field', 'ics_location_field', 'ics_url_field', 'ics_start_date_field', 'ics_end_date_field', 'ics_add_time_field', 'ics_start_time_field', 'ics_end_time_field'] as $strName) {
+        foreach (['ics_title_field', 'ics_description_field', 'ics_street_field', 'ics_postal_field', 'ics_city_field', 'ics_country_field', 'ics_location_field', 'ics_url_field', 'ics_start_date_field', 'ics_end_date_field', 'ics_add_time_field', 'ics_start_time_field', 'ics_end_time_field'] as $strName) {
             if (!isset($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName])) {
                 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType][$strName] = $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'][$strType][$strConcreteType]['email_subject'];
             }

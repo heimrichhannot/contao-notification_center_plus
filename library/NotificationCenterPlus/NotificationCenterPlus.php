@@ -234,6 +234,10 @@ class NotificationCenterPlus
         // remove token hashes
         $titleField       = str_replace('#', '', $languageModel->ics_title_field);
         $descriptionField = str_replace('#', '', $languageModel->ics_description_field);
+        $streetField      = str_replace('#', '', $languageModel->ics_street_field);
+        $postalField      = str_replace('#', '', $languageModel->ics_postal_field);
+        $cityField        = str_replace('#', '', $languageModel->ics_city_field);
+        $countryField     = str_replace('#', '', $languageModel->ics_country_field);
         $locationField    = str_replace('#', '', $languageModel->ics_location_field);
         $urlField         = str_replace('#', '', $languageModel->ics_url_field);
         $startDateField   = str_replace('#', '', $languageModel->ics_start_date_field);
@@ -281,12 +285,55 @@ class NotificationCenterPlus
             $event->setDescriptionHTML($tokens[$descriptionField]);
         }
 
-        if ($locationField && isset($tokens[$locationField])) {
-            $event->setLocation($tokens[$locationField]);
-        }
-
         if ($urlField && isset($tokens[$urlField])) {
             $event->setUrl($tokens[$urlField]);
+        }
+
+        // compose location out of various fields
+        $locationData = [];
+
+        if ($streetField && isset($tokens[$streetField])) {
+            $locationData['street'] = $tokens[$streetField];
+        }
+
+        if ($postalField && isset($tokens[$postalField])) {
+            $locationData['postal'] = $tokens[$postalField];
+        }
+
+        if ($cityField && isset($tokens[$cityField])) {
+            $locationData['city'] = $tokens[$cityField];
+        }
+
+        if ($countryField && isset($tokens[$countryField])) {
+            $locationData['country'] = $tokens[$countryField];
+        }
+
+        if ($locationField && isset($tokens[$locationField])) {
+            $locationData['location'] = $tokens[$locationField];
+        }
+
+        if (!empty($locationData)) {
+            $result = [];
+
+            if (isset($locationData['location'])) {
+                $result[] = $locationData['location'];
+            }
+
+            if (isset($locationData['street'])) {
+                $result[] = $locationData['street'];
+            }
+
+            if (isset($locationData['postal']) && isset($locationData['city'])) {
+                $result[] = $locationData['postal'] . ' ' . $locationData['city'];
+            } elseif (isset($locationData['city'])) {
+                $result[] = $locationData['city'];
+            }
+
+            if (isset($locationData['country'])) {
+                $result[] = $locationData['country'];
+            }
+
+            $event->setLocation(implode(', ', $result));
         }
 
         // create the ics calendar
