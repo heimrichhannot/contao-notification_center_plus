@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2020-09-28
+- fixed ics bugs
+
 ## [1.3.0] - 2020-09-24
 - added ics tokens for street, postal, city and country
 

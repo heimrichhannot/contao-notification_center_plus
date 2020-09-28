@@ -30,7 +30,7 @@ $fields = [
         'label'     => &$GLOBALS['TL_LANG']['tl_nc_language']['ics_title_field'],
         'exclude'   => true,
         'inputType' => 'text',
-        'eval'      => ['rgxp' => 'nc_tokens', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+        'eval'      => ['rgxp' => 'nc_tokens', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
         'sql'       => "varchar(255) NOT NULL default ''"
     ],
     'ics_description_field' => [
@@ -86,7 +86,7 @@ $fields = [
         'label'     => &$GLOBALS['TL_LANG']['tl_nc_language']['ics_start_date_field'],
         'exclude'   => true,
         'inputType' => 'text',
-        'eval'      => ['rgxp' => 'nc_tokens', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+        'eval'      => ['rgxp' => 'nc_tokens', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
         'sql'       => "varchar(255) NOT NULL default ''"
     ],
     'ics_end_date_field' => [

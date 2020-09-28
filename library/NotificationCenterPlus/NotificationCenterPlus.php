@@ -259,7 +259,7 @@ class NotificationCenterPlus
 
         if ($endDateField && isset($tokens[$endDateField]) && $tokens[$endDateField]) {
             // workaround for allday events
-            $end = (new \DateTime())->setTimestamp($tokens[$endDateField] + ($addTime ? 0 : 86400));
+            $end = (new \DateTime())->setTimestamp($tokens[$endDateField]);
             $end->setTime(0, 0, 0);
         }
 
@@ -282,7 +282,11 @@ class NotificationCenterPlus
         }
 
         if ($descriptionField && isset($tokens[$descriptionField])) {
-            $event->setDescriptionHTML($tokens[$descriptionField]);
+            $description = preg_replace('@<br\s*/?>@i', "\n", html_entity_decode($tokens[$descriptionField]));
+            $description = preg_replace('@</p>\s*<p>@i', "\n\n", $description);
+            $description = str_replace(['<p>', '</p>'], '', $description);
+
+            $event->setDescription($description);
         }
 
         if ($urlField && isset($tokens[$urlField])) {
@@ -291,6 +295,10 @@ class NotificationCenterPlus
 
         // compose location out of various fields
         $locationData = [];
+
+        if ($locationField && isset($tokens[$locationField])) {
+            $locationData['location'] = $tokens[$locationField];
+        }
 
         if ($streetField && isset($tokens[$streetField])) {
             $locationData['street'] = $tokens[$streetField];
@@ -306,10 +314,6 @@ class NotificationCenterPlus
 
         if ($countryField && isset($tokens[$countryField])) {
             $locationData['country'] = $tokens[$countryField];
-        }
-
-        if ($locationField && isset($tokens[$locationField])) {
-            $locationData['location'] = $tokens[$locationField];
         }
 
         if (!empty($locationData)) {
@@ -339,6 +343,7 @@ class NotificationCenterPlus
         // create the ics calendar
         $calendar = new Calendar(Environment::get('url'));
 
+        $calendar->setTimezone(\Config::get('timeZone'));
         $calendar->addComponent($event);
 
         $ics = $calendar->render();
