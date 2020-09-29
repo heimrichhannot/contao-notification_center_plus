@@ -3,8 +3,10 @@
 namespace HeimrichHannot\NotificationCenterPlus;
 
 use Contao\Environment;
+use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Validator;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
 use HeimrichHannot\Haste\Util\Arrays;
@@ -169,14 +171,26 @@ class NotificationCenterPlus
 
                 if (is_array($arrUserData)) {
                     foreach ($arrUserData as $key => $value) {
-                        if (!is_array($value) && \Validator::isBinaryUuid($value)) {
+                        if(is_array($value) && in_array($GLOBALS['TL_DCA']['tl_member']['fields'][$key]['inputType'], ['fileTree', 'multifileupload'])) {
+                            $files = [];
+                            foreach($value as $uuid) {
+                                if(null === ($path = $this->getFilePath($uuid))) {
+                                    continue;
+                                }
+                                $files[] = $path;
+                            }
+
+                            $value = $files;
+                        }
+
+                        elseif (!is_array($value) && \Validator::isBinaryUuid($value)) {
                             $value = \StringUtil::binToUuid($value);
 
-                            $objFile = \FilesModel::findByUuid($value);
-
-                            if ($objFile !== null) {
-                                $value = $objFile->path;
+                            if(null === ($path = $this->getFilePath($value))) {
+                                continue;
                             }
+
+                            $value = $path;
                         }
 
                         $arrTokens['user_' . $key] = $value;
@@ -185,6 +199,20 @@ class NotificationCenterPlus
             }
         }
     }
+
+    public function getFilePath($uuid)
+    {
+        if(!Validator::isUuid($uuid)) {
+            return null;
+        }
+
+        if(null === ($file = FilesModel::findByUuid($uuid))) {
+            return null;
+        }
+
+        return $file->path;
+    }
+
 
     public static function sendNotification($intId, $arrTokens)
     {

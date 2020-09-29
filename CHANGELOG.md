@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2020-09-29
+- fixed user tokens for uuid values
+
 ## [1.3.1] - 2020-09-28
 - fixed ics bugs
 
