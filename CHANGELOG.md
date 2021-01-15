@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 2021-01-15
+- fixed issues with cron command
+
 ## [1.3.2] - 2020-09-29
 - fixed user tokens for uuid values
 

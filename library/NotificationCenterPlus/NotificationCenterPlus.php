@@ -2,6 +2,7 @@
 
 namespace HeimrichHannot\NotificationCenterPlus;
 
+use Contao\Controller;
 use Contao\Environment;
 use Contao\FilesModel;
 use Contao\StringUtil;
@@ -68,6 +69,9 @@ class NotificationCenterPlus
 
     public function addTokens($objMessage, &$arrTokens, $strLanguage, $objGatewayModel)
     {
+        if (version_compare(VERSION, '4.4', '>=') && !\defined('TL_FILES_URL')) {
+            Controller::setStaticUrls();
+        }
         if (!isset($arrTokens['salutation_user'])) {
             $arrTokens['salutation_user'] = Salutations::createSalutation($strLanguage, \FrontendUser::getInstance());
         }
@@ -167,6 +171,7 @@ class NotificationCenterPlus
 
             // add user attributes as token
             if (FE_USER_LOGGED_IN) {
+                Controller::loadDataContainer('tl_member');
                 $arrUserData = \FrontendUser::getInstance()->getData();
 
                 if (is_array($arrUserData)) {
