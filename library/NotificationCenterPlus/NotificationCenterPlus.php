@@ -5,6 +5,7 @@ namespace HeimrichHannot\NotificationCenterPlus;
 use Contao\Controller;
 use Contao\Environment;
 use Contao\FilesModel;
+use Contao\StringUtil;
 use Contao\System;
 use Contao\Validator;
 use Eluceo\iCal\Component\Calendar;
@@ -257,6 +258,11 @@ class NotificationCenterPlus
 
     protected function addIcsAttachmentToken($message, &$tokens, $language)
     {
+        // avoid running multiple times if used in a queue
+        if (isset($tokens['ics_attachment_token']) && $tokens['ics_attachment_token']) {
+            return;
+        }
+
         // get the language
         if (null === ($languageModel = Language::findByMessageAndLanguageOrFallback($message, $language)) || !$languageModel->ics_attachment) {
             return;
@@ -316,6 +322,13 @@ class NotificationCenterPlus
             $description = preg_replace('@<br\s*/?>@i', "\n", html_entity_decode($tokens[$descriptionField]));
             $description = preg_replace('@</p>\s*<p>@i', "\n\n", $description);
             $description = str_replace(['<p>', '</p>'], '', $description);
+            $description = html_entity_decode(StringUtil::restoreBasicEntities($description));
+            $description = str_replace('&nbsp;', '', $description);
+
+            // replace links
+            $description = preg_replace('|<a[^h]+href\s?=\s?"([^"]+)"[^>]*>[^<]+</a>|i', '$1', $description);
+
+            $description = strip_tags($description);
 
             $event->setDescription($description);
         }
