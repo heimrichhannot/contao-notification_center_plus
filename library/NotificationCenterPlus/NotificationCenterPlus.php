@@ -5,12 +5,10 @@ namespace HeimrichHannot\NotificationCenterPlus;
 use Contao\Controller;
 use Contao\Environment;
 use Contao\FilesModel;
-use Contao\StringUtil;
 use Contao\System;
 use Contao\Validator;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
-use HeimrichHannot\Haste\Util\Arrays;
 use HeimrichHannot\Haste\Util\Files;
 use HeimrichHannot\Haste\Util\Salutations;
 use HeimrichHannot\Haste\Util\Url;
@@ -377,6 +375,16 @@ class NotificationCenterPlus
         $calendar = new Calendar(Environment::get('url'));
 
         $calendar->setTimezone(\Config::get('timeZone'));
+
+        // HOOK: add custom logic
+        if (isset($GLOBALS['TL_HOOKS']['modifyIcsFile']) && \is_array($GLOBALS['TL_HOOKS']['modifyIcsFile']))
+        {
+            foreach ($GLOBALS['TL_HOOKS']['modifyIcsFile'] as $callback)
+            {
+                System::importStatic($callback[0])->{$callback[1]}($calendar, $event, $tokens, $languageModel);
+            }
+        }
+
         $calendar->addComponent($event);
 
         $ics = $calendar->render();
