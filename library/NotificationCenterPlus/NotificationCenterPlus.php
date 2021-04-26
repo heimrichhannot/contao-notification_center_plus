@@ -326,7 +326,7 @@ class NotificationCenterPlus
             $description = str_replace('&nbsp;', '', $description);
 
             // replace links
-            $description = preg_replace('|<a[^h]+href\s?=\s?"([^"]+)"[^>]*>[^<]+</a>|i', '$1', $description);
+            $description = preg_replace('|<a[^h]+href\s?=\s?"([^"]+)"[^>]*>([^<]+)</a>|i', '$2 ($1)', $description);
 
             $description = strip_tags($description);
 
