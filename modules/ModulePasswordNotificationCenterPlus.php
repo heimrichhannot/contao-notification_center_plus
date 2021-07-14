@@ -4,10 +4,10 @@ namespace HeimrichHannot\NotificationCenterPlus;
 
 
 use Contao\MemberModel;
+use Contao\System;
 use HeimrichHannot\Haste\Util\Salutations;
 use HeimrichHannot\Request\Request;
 use HeimrichHannot\StatusMessages\StatusMessage;
-use function Sodium\version_string;
 
 class ModulePasswordNotificationCenterPlus extends \ModulePassword
 {
@@ -16,7 +16,7 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
      */
     protected function compile()
     {
-        $strParent = parent::compile();
+        parent::compile();
 
         if ($this->Template->error == $GLOBALS['TL_LANG']['MSC']['accountNotFound'])
         {
@@ -28,11 +28,9 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
             $this->Template->error = StatusMessage::generate($this->objModel->id);
         }
 
-	if(Request::getGet('token') && MemberModel::findOneByActivation(Request::getGet('token'))) {
+        if (Request::getGet('token') && MemberModel::findOneByActivation(Request::getGet('token'))) {
             $this->Template->reset = true;
         }
-
-        return $strParent;
     }
     
     /**
@@ -44,26 +42,28 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
     {
         $objNotification = \NotificationCenter\Model\Notification::findByPk($this->nc_notification);
 
-        if ($objNotification === null)
-        {
+        if ($objNotification === null) {
             $this->log('The notification was not found ID ' . $this->nc_notification, __METHOD__, TL_ERROR);
-
             return;
         }
 
-        if (version_compare(VERSION, '4.4', '<=') && version_compare(BUILD, '12', '<'))
-        {
-            $strToken = md5(uniqid(mt_rand(), true));
-        }
-        else
-        {
-            $strToken = 'PW' . substr(md5(uniqid(mt_rand(), true)), 2);
+        $token         = md5(uniqid(mt_rand(), true));
+        $contaoVersion = VERSION . '.' . BUILD;
+        if (version_compare($contaoVersion, '4.7.0', '>=')) {
+            /** @var \Contao\CoreBundle\OptIn\OptIn $optIn */
+            $optIn      = System::getContainer()->get('contao.opt-in');
+            $optInToken = $optIn->create('pw', $objMember->email, ['tl_member' => [$objMember->id]]);
+            $token      = $optInToken->getIdentifier();
+        } elseif (version_compare($contaoVersion, '4.4.12', '>=')) {
+            $token = 'PW' . substr($token, 2);
         }
 
-        // Store the confirmation ID
-        $objMember             = \MemberModel::findByPk($objMember->id);
-        $objMember->activation = $strToken;
-        $objMember->save();
+        if (!version_compare($contaoVersion, '4.7.0', '>=')) {
+            // Store the token
+            $objMember             = \MemberModel::findByPk($objMember->id);
+            $objMember->activation = $token;
+            $objMember->save();
+        }
 
         $arrTokens = [];
 
@@ -89,13 +89,13 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
                                                                                         || strpos(
                                                                                                \Environment::get('request'),
                                                                                                '?'
-                                                                                           ) !== false) ? '&' : '?') . 'token=' . $strToken;
+                                                                                           ) !== false) ? '&' : '?') . 'token=' . $token;
 
         // FIX: Add custom change password jump to
         if (($objJumpTo = $this->objModel->getRelated('changePasswordJumpTo')) !== null)
         {
             $arrTokens['link'] =
-                \Idna::decode(\Environment::get('base')) . \Controller::generateFrontendUrl($objJumpTo->row()) . '?token=' . $strToken;
+                \Idna::decode(\Environment::get('base')) . \Controller::generateFrontendUrl($objJumpTo->row()) . '?token=' . $token;
         }
         // ENDFIX
 

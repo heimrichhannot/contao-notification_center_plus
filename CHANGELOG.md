@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.4] - 2021-07-14
+
+- fixed password module for contao >= 4.7
+
 ## [1.4.3] - 2021-04-26
 
 - fixed markup issues for ics extension
