@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2021-08-31
+
+- Added: support for php 8
+
 ## [1.4.4] - 2021-07-14
 
 - fixed password module for contao >= 4.7
