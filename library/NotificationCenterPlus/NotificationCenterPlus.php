@@ -122,33 +122,43 @@ class NotificationCenterPlus
      *
      * @return bool false if context_tokens has been set already (required by cron)
      */
-    protected function addContextTokens($objMessage, &$arrTokens, $strLanguage)
+    protected function addContextTokens($objMessage, &$tokens, $strLanguage)
     {
         // add context tokens only once (queue will trigger this function again, and tokens might be overwritten)
-        if (isset($arrTokens['context_tokens'])) {
+        if (isset($tokens['context_tokens'])) {
             return false;
         }
 
-        $arrTokens['context_tokens'] = true;
+        $contextTokens = [];
+
+        $contextTokens['context_tokens'] = true;
 
         // add environment variables as token
-        $arrTokens['env_host']         = \Idna::decode(\Environment::get('host'));
-        $arrTokens['env_http_host']    = \Idna::decode(\Environment::get('httpHost'));
-        $arrTokens['env_url']          = \Idna::decode(\Environment::get('url'));
-        $arrTokens['env_path']         = \Idna::decode(\Environment::get('base'));
-        $arrTokens['env_request']      = \Idna::decode(\Environment::get('indexFreeRequest'));
-        $arrTokens['env_request_path'] = \Idna::decode(Url::removeAllParametersFromUri(\Environment::get('indexFreeRequest')));
-        $arrTokens['env_ip']           = \Idna::decode(\Environment::get('ip'));
-        $arrTokens['env_referer']      = \System::getReferer();
-        $arrTokens['env_files_url']    = TL_FILES_URL;
+        $contextTokens['env_host']         = \Idna::decode(\Environment::get('host'));
+        $contextTokens['env_http_host']    = \Idna::decode(\Environment::get('httpHost'));
+        $contextTokens['env_url']          = \Idna::decode(\Environment::get('url'));
+        $contextTokens['env_path']         = \Idna::decode(\Environment::get('base'));
+        $contextTokens['env_request']      = \Idna::decode(\Environment::get('indexFreeRequest'));
+        $contextTokens['env_request_path'] = \Idna::decode(Url::removeAllParametersFromUri(\Environment::get('indexFreeRequest')));
+        $contextTokens['env_ip']           = \Idna::decode(\Environment::get('ip'));
+        $contextTokens['env_referer']      = \System::getReferer();
+        $contextTokens['env_files_url']    = TL_FILES_URL;
         $assetUrl                      = TL_ASSETS_URL;
-        $arrTokens['env_plugins_url']  = $assetUrl;
-        $arrTokens['env_script_url']   = $assetUrl;
+        $contextTokens['env_plugins_url']  = $assetUrl;
+        $contextTokens['env_script_url']   = $assetUrl;
 
 
         // add date tokens
-        $arrTokens['date']        = date(\Config::get('dateFormat'));
-        $arrTokens['last_update'] = \Controller::replaceInsertTags('{{last_update}}', false);
+        $contextTokens['date']        = date(\Config::get('dateFormat'));
+        $contextTokens['last_update'] = \Controller::replaceInsertTags('{{last_update}}', false);
+
+        if (false === json_encode($contextTokens)) {
+            System::log("Invalid value when adding context tokens (notification center plus).", __METHOD__, TL_ERROR);
+        } else {
+            $tokens = array_merge($tokens, $contextTokens);
+        }
+
+        $contextTokens = [];
 
         if (TL_MODE == 'FE') {
             // add current page as token
@@ -156,15 +166,19 @@ class NotificationCenterPlus
 
             if ($objPage !== null) {
                 foreach ($objPage->row() as $key => $value) {
-                    $arrTokens['page_' . $key] = $value;
+                    // skip fields leading to issues on json_encode
+                    if (ctype_print($value)) {
+                        $tokens['user_'.$key] = $value;
+                    }
+                    $contextTokens['page_' . $key] = $value;
                 }
 
                 if ($objPage->pageTitle == '') {
-                    $arrTokens['pageTitle'] = $objPage->title;
+                    $contextTokens['pageTitle'] = $objPage->title;
                 } elseif ($objPage->parentPageTitle == '') {
-                    $arrTokens['parentPageTitle'] = $objPage->parentTitle;
+                    $contextTokens['parentPageTitle'] = $objPage->parentTitle;
                 } elseif ($objPage->mainPageTitle == '') {
-                    $arrTokens['mainPageTitle'] = $objPage->mainTitle;
+                    $contextTokens['mainPageTitle'] = $objPage->mainTitle;
                 }
             }
 
@@ -197,11 +211,18 @@ class NotificationCenterPlus
                             $value = $path;
                         }
 
-                        $arrTokens['user_' . $key] = $value;
+                        $contextTokens['user_' . $key] = $value;
                     }
                 }
             }
         }
+
+        if (false === json_encode($contextTokens)) {
+            System::log("Invalid value when adding context tokens (notification center plus).", __METHOD__, TL_ERROR);
+            return false;
+        }
+
+        $tokens = array_merge($tokens, $contextTokens);
     }
 
     public function getFilePath($uuid)

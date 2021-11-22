@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] - 2021-11-22
+- Changed: added checks to reduce the possibility of invalid notification center tokens
+
 ## [1.5.0] - 2021-08-31
 
 - Added: support for php 8
