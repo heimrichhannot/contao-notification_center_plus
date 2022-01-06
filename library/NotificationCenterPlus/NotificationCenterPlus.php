@@ -167,7 +167,7 @@ class NotificationCenterPlus
             if ($objPage !== null) {
                 foreach ($objPage->row() as $key => $value) {
                     // skip fields leading to issues on json_encode
-                    if (ctype_print($value)) {
+                    if (\json_encode($value) !== false) {
                         $tokens['user_'.$key] = $value;
                     }
                     $contextTokens['page_' . $key] = $value;
