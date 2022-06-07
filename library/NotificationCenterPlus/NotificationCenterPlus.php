@@ -77,9 +77,9 @@ class NotificationCenterPlus
 
         if (!isset($arrTokens['salutation_form'])) {
             $arrTokens['salutation_form'] = Salutations::createSalutation($strLanguage, [
-                'gender'   => $arrTokens['form_value_gender'] ?: $arrTokens['form_salutation'],
-                'title'    => $arrTokens['form_title'] ?: $arrTokens['form_academicTitle'],
-                'lastname' => $arrTokens['form_lastname'],
+                'gender'   => $arrTokens['form_value_gender'] ?? $arrTokens['form_salutation'] ?? '',
+                'title'    => $arrTokens['form_title'] ?? $arrTokens['form_academicTitle'] ?? '',
+                'lastname' => $arrTokens['form_lastname'] ?? '',
             ]);
         }
 

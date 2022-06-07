@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.2] - 2022-06-07
+- Fixed: warning in php 8
+
 ## [1.6.1] - 2022-01-06
 - Changed: fixed checks to reduce the possibility of invalid notification center tokens
 - 

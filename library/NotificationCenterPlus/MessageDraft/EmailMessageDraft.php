@@ -22,7 +22,7 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
     public function __construct(Message $objMessage, Language $objLanguage, $arrTokens)
     {
         // add overridable properties
-        if (is_array($arrTokens['overridableProperties']) && is_array($arrTokens['overridableEntities']))
+        if (is_array($arrTokens['overridableProperties'] ?? null) && is_array($arrTokens['overridableEntities'] ?? null))
         {
             foreach ($arrTokens['overridableProperties'] as $strProperty)
             {
