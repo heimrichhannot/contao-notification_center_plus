@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.3] - 2023-02-01
+- Fixed: attachments issues ([#3])
+- Fixed: missing request dependency ([#2])
+- Fixed: usage of deprecated DOM class
+
 ## [1.6.2] - 2022-06-07
 - Fixed: warning in php 8
 
@@ -149,3 +154,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - support for haste_plus overridable properties
+
+
+[#3]: https://github.com/heimrichhannot/contao-notification_center_plus/issues/3
+[#2]: https://github.com/heimrichhannot/contao-notification_center_plus/issues/2

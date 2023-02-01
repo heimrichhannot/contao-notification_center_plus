@@ -11,6 +11,9 @@
 namespace HeimrichHannot\NotificationCenterPlus\Util;
 
 
+/**
+ * @deprecated Not needed anymore as issue fixed in notification center
+ */
 class StringUtil extends \NotificationCenter\Util\StringUtil
 {
 	/**

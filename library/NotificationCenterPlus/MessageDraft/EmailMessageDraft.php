@@ -11,21 +11,19 @@
 namespace HeimrichHannot\NotificationCenterPlus\MessageDraft;
 
 use HeimrichHannot\Haste\Dca\General;
-use HeimrichHannot\HastePlus\DOM;
+use HeimrichHannot\Haste\Util\DOMUtil;
 use HeimrichHannot\NotificationCenterPlus\NotificationCenterPlus;
-use HeimrichHannot\NotificationCenterPlus\Util\StringUtil;
+use NotificationCenter\MessageDraft\EmailMessageDraft as NcEmailMessageDraft;
 use NotificationCenter\Model\Language;
 use NotificationCenter\Model\Message;
 
-class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDraft
+class EmailMessageDraft extends NcEmailMessageDraft
 {
     public function __construct(Message $objMessage, Language $objLanguage, $arrTokens)
     {
         // add overridable properties
-        if (is_array($arrTokens['overridableProperties'] ?? null) && is_array($arrTokens['overridableEntities'] ?? null))
-        {
-            foreach ($arrTokens['overridableProperties'] as $strProperty)
-            {
+        if (is_array($arrTokens['overridableProperties'] ?? null) && is_array($arrTokens['overridableEntities'] ?? null)) {
+            foreach ($arrTokens['overridableProperties'] as $strProperty) {
                 $objLanguage->{$strProperty} = General::getOverridableProperty($strProperty, array_merge([$objLanguage], $arrTokens['overridableEntities']));
             }
         }
@@ -47,50 +45,25 @@ class EmailMessageDraft extends \NotificationCenter\MessageDraft\EmailMessageDra
     {
         $strHtmlBody = parent::getHtmlBody();
 
-        if ($this->getMessage()->convertPtoBr)
-        {
-            $strHtmlBody = NotificationCenterPlus::convertPToBr($strHtmlBody);
+        if (!empty($strHtmlBody)) {
+            if ($this->getMessage()->convertPtoBr) {
+                $strHtmlBody = NotificationCenterPlus::convertPToBr($strHtmlBody);
+            }
+
+            if ($strHtmlBody && $this->getMessage()->addStylesheets) {
+                $strHtmlBody = NotificationCenterPlus::addHeaderCss($strHtmlBody, $this->getMessage());
+
+                $strHtmlBody = DOMUtil::convertToInlineCss(
+                    $strHtmlBody,
+                    implode(
+                        ' ',
+                        NotificationCenterPlus::getStylesheetContents($this->getMessage(), NotificationCenterPlus::CSS_MODE_INLINE)
+                    )
+                );
+            }
         }
 
-        if ($strHtmlBody && $this->getMessage()->addStylesheets)
-        {
-            $strHtmlBody = NotificationCenterPlus::addHeaderCss($strHtmlBody, $this->getMessage());
-
-            $strHtmlBody = DOM::convertToInlineCss(
-                $strHtmlBody,
-                implode(
-                    ' ',
-                    NotificationCenterPlus::getStylesheetContents($this->getMessage(), NotificationCenterPlus::CSS_MODE_INLINE)
-                )
-            );
-        }
 
         return $strHtmlBody;
-    }
-
-    public function getAttachments()
-    {
-        // Token attachments
-        $arrAttachments = StringUtil::getTokenAttachments($this->objLanguage->attachment_tokens, $this->arrTokens);
-
-        // Add static attachments
-        $arrStaticAttachments = deserialize($this->objLanguage->attachments, true);
-
-        if (!empty($arrStaticAttachments))
-        {
-            $objFiles = \FilesModel::findMultipleByUuids($arrStaticAttachments);
-
-            if ($objFiles === null)
-            {
-                return $arrAttachments;
-            }
-
-            while ($objFiles->next())
-            {
-                $arrAttachments[] = TL_ROOT . '/' . $objFiles->path;
-            }
-        }
-
-        return $arrAttachments;
     }
 }

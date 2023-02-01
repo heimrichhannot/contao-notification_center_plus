@@ -20,9 +20,10 @@
         "php": "~5.4 || ~7.0 || ^8.0",
         "contao/core-bundle": "^3.5.1 || ~4.1",
         "contao-community-alliance/composer-plugin": "~2.4 || ~3.0",
-        "terminal42/notification_center": "~1.3",
+        "terminal42/notification_center": "^1.5",
         "heimrichhannot/contao-haste_plus": "~1.4",
         "heimrichhannot/contao-status_messages": "^1.0|^2.0",
+        "heimrichhannot/contao-request": "^1.2",
         "bariew/phpquery": "~1.0",
         "eluceo/ical": "^0.16"
     },
