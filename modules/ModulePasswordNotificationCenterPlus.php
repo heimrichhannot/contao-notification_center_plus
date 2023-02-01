@@ -3,10 +3,10 @@
 namespace HeimrichHannot\NotificationCenterPlus;
 
 
+use Contao\Input;
 use Contao\MemberModel;
 use Contao\System;
 use HeimrichHannot\Haste\Util\Salutations;
-use HeimrichHannot\Request\Request;
 use HeimrichHannot\StatusMessages\StatusMessage;
 
 class ModulePasswordNotificationCenterPlus extends \ModulePassword
@@ -28,7 +28,9 @@ class ModulePasswordNotificationCenterPlus extends \ModulePassword
             $this->Template->error = StatusMessage::generate($this->objModel->id);
         }
 
-        if (Request::getGet('token') && MemberModel::findOneByActivation(Request::getGet('token'))) {
+
+
+        if (Input::get('token') && MemberModel::findOneByActivation(Input::get('token'))) {
             $this->Template->reset = true;
         }
     }

@@ -23,7 +23,6 @@
         "terminal42/notification_center": "^1.5",
         "heimrichhannot/contao-haste_plus": "~1.4",
         "heimrichhannot/contao-status_messages": "^1.0|^2.0",
-        "heimrichhannot/contao-request": "^1.2",
         "bariew/phpquery": "~1.0",
         "eluceo/ical": "^0.16"
     },

@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2023-02-01
+- Changed: removed request dependency
+
 ## [1.6.3] - 2023-02-01
 - Fixed: attachments issues ([#3])
 - Fixed: missing request dependency ([#2])
