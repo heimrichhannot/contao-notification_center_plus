@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2023-02-01
 - Changed: removed request dependency
+- Fixed: display errors for ical addresses
 
 ## [1.6.3] - 2023-02-01
 - Fixed: attachments issues ([#3])

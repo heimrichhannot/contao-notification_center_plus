@@ -361,23 +361,23 @@ class NotificationCenterPlus
         // compose location out of various fields
         $locationData = [];
 
-        if ($locationField && isset($tokens[$locationField])) {
+        if ($locationField && !empty($tokens[$locationField])) {
             $locationData['location'] = $tokens[$locationField];
         }
 
-        if ($streetField && isset($tokens[$streetField])) {
+        if ($streetField && !empty($tokens[$streetField])) {
             $locationData['street'] = $tokens[$streetField];
         }
 
-        if ($postalField && isset($tokens[$postalField])) {
+        if ($postalField && !empty($tokens[$postalField])) {
             $locationData['postal'] = $tokens[$postalField];
         }
 
-        if ($cityField && isset($tokens[$cityField])) {
+        if ($cityField && !empty($tokens[$cityField])) {
             $locationData['city'] = $tokens[$cityField];
         }
 
-        if ($countryField && isset($tokens[$countryField])) {
+        if ($countryField && !empty($tokens[$countryField])) {
             $locationData['country'] = $tokens[$countryField];
         }
 
