@@ -5,6 +5,7 @@ namespace HeimrichHannot\NotificationCenterPlus;
 use Contao\Controller;
 use Contao\Environment;
 use Contao\FilesModel;
+use Contao\FrontendUser;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Validator;
@@ -185,26 +186,24 @@ class NotificationCenterPlus
             // add user attributes as token
             if (FE_USER_LOGGED_IN) {
                 Controller::loadDataContainer('tl_member');
-                $arrUserData = \FrontendUser::getInstance()->getData();
+                $arrUserData = FrontendUser::getInstance()->getData();
 
                 if (is_array($arrUserData)) {
                     foreach ($arrUserData as $key => $value) {
-                        if(is_array($value) && in_array($GLOBALS['TL_DCA']['tl_member']['fields'][$key]['inputType'], ['fileTree', 'multifileupload'])) {
+                        if (is_array($value) && in_array(($GLOBALS['TL_DCA']['tl_member']['fields'][$key]['inputType'] ?? []), ['fileTree', 'multifileupload'])) {
                             $files = [];
-                            foreach($value as $uuid) {
-                                if(null === ($path = $this->getFilePath($uuid))) {
+                            foreach ($value as $uuid) {
+                                if (null === ($path = $this->getFilePath($uuid))) {
                                     continue;
                                 }
                                 $files[] = $path;
                             }
 
                             $value = $files;
-                        }
+                        } elseif (!is_array($value) && Validator::isBinaryUuid($value)) {
+                            $value = StringUtil::binToUuid($value);
 
-                        elseif (!is_array($value) && \Validator::isBinaryUuid($value)) {
-                            $value = \StringUtil::binToUuid($value);
-
-                            if(null === ($path = $this->getFilePath($value))) {
+                            if (null === ($path = $this->getFilePath($value))) {
                                 continue;
                             }
 

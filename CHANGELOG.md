@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2023-02-01
+## [1.7.0] - 2023-02-16
 - Changed: removed request dependency
 - Fixed: display errors for ical addresses
+- Fixed: warning ([#5](https://github.com/heimrichhannot/contao-notification_center_plus/issues/5))
 
 ## [1.6.3] - 2023-02-01
 - Fixed: attachments issues ([#3])
